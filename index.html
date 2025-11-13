@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Entry Verification</title>
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/3/3a/Circle-icons-photo.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: "Inter", sans-serif;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* Background video or image */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) blur(2px);
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.9) 100%);
+            z-index: -1;
+        }
+
+        /* Center box */
+        .verify-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px 50px;
+            text-align: center;
+            color: #fff;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .verify-box h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .verify-box p {
+            font-size: 0.95em;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+
+        .verify-box button {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-enter {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-enter:hover {
+            background: #43a047;
+        }
+
+        .btn-exit {
+            background: #e53935;
+            color: white;
+        }
+
+        .btn-exit:hover {
+            background: #c62828;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media(max-width: 600px) {
+            .verify-box {
+                width: 90%;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline class="bg-video"
+        src="https://www.xvideos.com/embedframe/okpmfhbf839"></video>
+    <div class="overlay"></div>
+
+    <div class="verify-box">
+        <h1>Welcome to Gallery Showcase</h1>
+        <p>Please confirm you are of the appropriate age to enter this site.</p>
+        <button class="btn-enter" onclick="enterSite()">I’m 18 or Older</button>
+        <button class="btn-exit" onclick="exitSite()">Exit</button>
+        <div class="footer-note">By entering, you agree to our terms and policies.</div>
+    </div>
+
+    <script>
+        function enterSite() {
+            // Smooth fade-out before redirect
+            document.body.style.transition = "opacity 0.8s";
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = "new.html";
+            }, 800);
+        }
+
+        function exitSite() {
+            alert("You must be 18 or older to continue.");
+            window.close(); // Works only in certain browsers
+        }
+    </script>
+</body>
+
+</html>

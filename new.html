@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adult Image Gallery</title>
+    <link rel="icon" type="image/png"
+        href="https://em-content.zobj.net/thumbs/120/apple/354/no-one-under-eighteen_1f51e.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            font-family: "Inter", sans-serif;
+            background: #111;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #4caf50;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .img-card {
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: #222;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .img-card:hover {
+            transform: scale(1.03);
+        }
+
+        .img-card img {
+            width: 100%;
+            display: block;
+        }
+
+        .img-card p {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .ad-banner {
+            margin: 20px 0;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        #back-home {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #back-home:hover {
+            background: #45a049;
+        }
+
+
+        /* Top Video Banner */
+        .top-video {
+            position: relative;
+            width: 100%;
+            max-height: 300px;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .top-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Carousel */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 180px;
+            border-radius: 10px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 150px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        @media(max-width:600px) {
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .carousel-item {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="site-container">
+        <div class="top-video">
+            <iframe id="top-video" src="https://www.xvideos.com/embedframe/okpmfhbf839" frameborder="0" scrolling="no"
+                allowfullscreen></iframe>
+        </div>
+
+
+
+        <!-- Navigation -->
+        <nav>
+            <a data-category="regular">Regular</a>
+            <a data-category="chubby">Chubby</a>
+            <a data-category="thin">Thin</a>
+            <a data-category="thick">Thick</a>
+            <a data-category="black">Black</a>
+            <a data-category="gay">Gay</a>
+        </nav>
+
+        <!-- Ads -->
+        <div class="ad-banner" id="home-ad-1">[Ad Banner 1] if you want contact with some of the model contact at </div>
+        <div class="ad-banner" id="home-ad-2">[Ad Banner 2]dthanggz458@mail.com</div>
+
+        <!-- Home / Previews -->
+        <div id="home">
+            <h2>Featured Categories</h2>
+            <div class="grid" id="category-preview"></div>
+
+            <!-- Carousel for extra images -->
+            <div class="carousel-container">
+                <div class="carousel-track" id="carousel-track"></div>
+            </div>
+        </div>
+
+        <!-- Gallery -->
+        <div id="gallery" style="display:none;">
+            <h2 id="gallery-title"></h2>
+            <div class="grid" id="gallery-images"></div>
+            <div class="ad-banner" id="gallery-ad">[Ad Banner] contact as at fo advertisement</div>
+            <button id="back-home">← Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        const siteContainer = document.getElementById('site-container');
+        const categoryPreview = document.getElementById('category-preview');
+        const galleryTitle = document.getElementById('gallery-title');
+        const galleryImages = document.getElementById('gallery-images');
+        const homeDiv = document.getElementById('home');
+        const galleryDiv = document.getElementById('gallery');
+        const backHomeBtn = document.getElementById('back-home');
+        const carouselTrack = document.getElementById('carousel-track');
+        const topVideo = document.getElementById('top-video');
+
+        const categories = {
+            regular: [
+                { src: 'https://cdni.pornpics.com/1280/7/391/68356829/68356829_036_df92.jpg', caption: 'I am bending for you daddy❤️💞' },
+                { src: 'https://cdni.pornpics.com/1280/7/118/66072264/66072264_135_a745.jpg', caption: 'Come join as for rough sex☣️💘' },
+                { src: 'https://cdni.pornpics.com/1280/7/526/33032323/33032323_148_4542.jpg', caption: 'I have the wettest pussy 🫢🫠' },
+                { src: 'https://cdni.pornpics.com/1280/7/47/30946096/30946096_384_88d0.jpg', capyion: 'plz slide in my pussy like butter' },
+                { src: 'https://cdni.pornpics.com/1280/5/79/54071057/54071057_008_04dc.jpg', caption: 'Oiling up for you' },
+
+
+            ],
+            chubby: [
+                { src: 'https://cdni.pornpics.com/1280/7/615/38451661/38451661_164_a236.jpg', caption: 'heavy dick alter🍆🍆🍆' },
+                { src: 'https://cdni.pornpics.com/1280/7/615/63448522/63448522_149_1dca.jpg', caption: 'Mommy just enjoying🙂‍↕️🙂‍↔️' },
+                { src: 'https://cdni.pornpics.com/1280/7/626/19681274/19681274_069_cd61.jpg', caption: 'Cute bitch stares into your soul🫦👀' }
+            ],
+            thin: [
+                { src: 'https://www.sexvid.xxx/photos/stepdad-s-cock-doesn-t-disappoint-small-tittied-teen-with-red-hair-and-pale-skin/?promo=1598#&gid=1&pid=8', caption: 'Only available for premium users' },
+                { src: 'https://cdni.pornpics.com/1280/7/244/63984757/63984757_041_bdac.jpg', caption: 'Sucking my steps sister pussy🤯🥵' },
+                { src: 'https://cdni.perfectporn.pics/1280/7/690/76263760/76263760_012_e3e9.jpg', caption: 'Dick so sweet i have cum in my mouth🤫👅' }
+            ],
+            thick: [
+                { src: 'https://cdni.pornpics.com/1280/7/768/34129424/34129424_040_8887.jpg', caption: 'Do you want me to sit on ur dick🍆♿️ text dthanggz458@gmail.com' },
+                { src: 'https://cdni.pornpics.com/1280/7/548/11431620/11431620_054_75cb.jpg', caption: 'oiled up for you Daddy🤪🥹' },
+                { src: 'https://cdni.pornpics.com/1280/7/108/66176572/66176572_069_d050.jpg', caption: 'Oiled up and ready to fuck💝💖' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.explicit.bing.net%2Fth%2Fid%2FOIP.X84TtZtKC_7yreqadEjbLgHaE8%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=469fc9d84aa56e6309f1aa46819b4f1edf4abb0a650bfbd67b8a27398bb7abe1&ipo=images', caption: 'I cant wait for this dick to get in🥵' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.eom549vHnhRnLv45yFLOEwHaKw%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=966afd559d6a2da5cd795b4bde400ea716341c8ae032bb36b03bb154fb399ab6&ipo=images', caption: 'White and Black best combo⚪️⚫️' },
+            ],
+            black: [
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.zHurrbKHoE2emmkSsj_yQgHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=847502abd986a169a57e4bbcbd963033a4c6dd336e10fa6e577652f77423b09c&ipo=images', caption: 'No pussy sweeter than black🖤🫶🏿' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.Ai3hcGhj3WaKM3n1XtSJzwHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=51a56ef3eb1f08e366446cbeb1ea5536bf7f5e365ec808cdf589bc3ae3b91faf&ipo=images', caption: 'How dare he cum in he is a keeper🫣⚫️ ' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.explicit.bing.net%2Fth%2Fid%2FOIP.ljOdA19Km0D_UPgQUSKW9gHaEL%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=2c3027b3f5cf0723c67864f9827224a847b48bc2008e0e3758a44cf0d87512f0&ipo=images', caption: 'Plz Daddy Doggy style is the best🐶🐈' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.3XlNNZn48vPy4i7me8nY0QHaF0%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=90583c3afab57354a5572bfb8d4c5559613a03be4d9ac32d8ab3112c4530d147&ipo=images', caption: 'This chocolate is all i need 🍫🍬' },
+            ],
+            gay: [
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.XM74O0CuF7HQbiWcKI6VPAHaNK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=b5547efd0e0a83972d8caaeb91c20cfbe12aaf777f35457586071bdcf3004cdf&ipo=images', caption: 'dick so big i cant breathe🖤🥵' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.explicit.bing.net%2Fth%2Fid%2FOIP.CsNDQnZGrgyM2ngZ38ClvQHaEI%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=0170a22ed2f888b7438e81c250fa19130d4bafe2f79ab3ea55d924ba4f55c27c&ipo=images', caption: 'watery white ass gay mate🤪' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.5u-p9WUaQ2vezGoBMagI2gHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=8181b84d9acd026677884a06a83e18daa1c1a4a66747cf1a144e8abd9a2f268d&ipo=images', caption: 'As juciy as it can get🧋🍹' },
+                { src: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.zMo7XJuDD31uRS_b7lFGDwHaEK%3Fcb%3Ducfimgc2%26pid%3DApi&f=1&ipt=e053bf1f410f5c824ec169c24e76e22d3acb5b8fc585325ed36af38fabe5ef51&ipo=images', caption: 'Nothing here just lesbians sucking each other💏🏿👨🏻‍❤️‍👨🏻' },
+            ]
+        };
+
+        // Sample extra carousel images
+        const carouselImages = [
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.zMo7XJuDD31uRS_b7lFGDwHaEK%3Fcb%3Ducfimgc2%26pid%3DApi&f=1&ipt=e053bf1f410f5c824ec169c24e76e22d3acb5b8fc585325ed36af38fabe5ef51&ipo=images',
+            'https://cdni.pornpics.com/1280/7/108/66176572/66176572_069_d050.jpg',
+            'https://cdni.pornpics.com/1280/7/615/38451661/38451661_164_a236.jpg',
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.explicit.bing.net%2Fth%2Fid%2FOIP.ljOdA19Km0D_UPgQUSKW9gHaEL%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=2c3027b3f5cf0723c67864f9827224a847b48bc2008e0e3758a44cf0d87512f0&ipo=images'
+            , 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.zHurrbKHoE2emmkSsj_yQgHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=847502abd986a169a57e4bbcbd963033a4c6dd336e10fa6e577652f77423b09c&ipo=images',
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.Ai3hcGhj3WaKM3n1XtSJzwHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=51a56ef3eb1f08e366446cbeb1ea5536bf7f5e365ec808cdf589bc3ae3b91faf&ipo=images',
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.explicit.bing.net%2Fth%2Fid%2FOIP.ljOdA19Km0D_UPgQUSKW9gHaEL%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=2c3027b3f5cf0723c67864f9827224a847b48bc2008e0e3758a44cf0d87512f0&ipo=images',
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.explicit.bing.net%2Fth%2Fid%2FOIP.5u-p9WUaQ2vezGoBMagI2gHaEK%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=8181b84d9acd026677884a06a83e18daa1c1a4a66747cf1a144e8abd9a2f268d&ipo=images',
+            'https://cdni.pornpics.com/1280/7/391/68356829/68356829_036_df92.jpg',
+            'https://cdni.pornpics.com/1280/7/626/19681274/19681274_069_cd61.jpg',
+            'https://cdni.pornpics.com/1280/7/118/66072264/66072264_135_a745.jpg',
+            'https://cdni.pornpics.com/1280/7/244/63984757/63984757_041_bdac.jpg',
+            'https://cdni.pornpics.com/1280/7/108/66176572/66176572_069_d050.jpg',
+            'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.explicit.bing.net%2Fth%2Fid%2FOIP.X84TtZtKC_7yreqadEjbLgHaE8%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=469fc9d84aa56e6309f1aa46819b4f1edf4abb0a650bfbd67b8a27398bb7abe1&ipo=images',
+            'https://cdni.pornpics.com/1280/7/548/11431620/11431620_054_75cb.jpg',
+            'https://cdni.pornpics.com/1280/7/615/63448522/63448522_149_1dca.jpg',
+        ];
+
+        function showHome() {
+            homeDiv.style.display = 'block';
+            galleryDiv.style.display = 'none';
+            categoryPreview.innerHTML = '';
+            for (const cat in categories) {
+                categories[cat].forEach(img => {
+                    const card = document.createElement('div');
+                    card.className = 'img-card';
+                    card.innerHTML = `<img src="${img.src}" alt="${img.caption}"/><p>${img.caption}</p>`;
+                    card.onclick = () => showGallery(cat);
+                    categoryPreview.appendChild(card);
+                });
+            }
+
+            // Fill carousel
+            carouselTrack.innerHTML = '';
+            carouselImages.forEach(src => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.innerHTML = `<img src="${src}" />`;
+                carouselTrack.appendChild(item);
+            });
+        }
+
+        function showGallery(cat) {
+            homeDiv.style.display = 'none';
+            galleryDiv.style.display = 'block';
+            galleryTitle.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+            galleryImages.innerHTML = '';
+            categories[cat].forEach(img => {
+                const card = document.createElement('div');
+                card.className = 'img-card';
+                card.innerHTML = `<img src="${img.src}" alt="${img.caption}"/><p>${img.caption}</p>`;
+                galleryImages.appendChild(card);
+            });
+        }
+
+        document.querySelectorAll('nav a').forEach(link => {
+            link.onclick = e => {
+                e.preventDefault();
+                showGallery(link.getAttribute('data-category'));
+            }
+        });
+
+        backHomeBtn.onclick = showHome;
+
+        // Carousel autoplay
+        let scrollPos = 0;
+        setInterval(() => {
+            scrollPos += 2;
+            if (scrollPos >= carouselTrack.scrollWidth / 2) scrollPos = 0;
+            carouselTrack.style.transform = `translateX(-${scrollPos}px)`;
+        }, 50);
+
+        // Initialize
+        siteContainer.style.display = 'flex';
+        showHome();
+    </script>
+</body>
+
+</html>
